@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+}
+
+/* Prose tweaks */
+.prose p {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.prose ul, .prose ol {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.prose code {
+  background: #f1f5f9;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+}
