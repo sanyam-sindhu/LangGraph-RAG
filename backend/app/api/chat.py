@@ -3,6 +3,7 @@ from langchain_core.messages import HumanMessage
 from app.models.schemas import ChatRequest, ChatResponse
 from app.graph.rag_graph import build_rag_graph
 from app.core.database import get_checkpointer
+from app.core.langfuse_client import get_langfuse_callback
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -13,7 +14,16 @@ async def chat(request: ChatRequest):
         checkpointer = get_checkpointer()
         graph = build_rag_graph(checkpointer=checkpointer)
 
-        config = {"configurable": {"thread_id": request.thread_id}}
+        langfuse_handler = get_langfuse_callback(
+            session_id=request.thread_id,
+            user_id=request.session_id,
+        )
+        callbacks = [langfuse_handler] if langfuse_handler else []
+
+        config = {
+            "configurable": {"thread_id": request.thread_id},
+            "callbacks": callbacks,
+        }
         initial_state = {
             "messages": [HumanMessage(content=request.message)],
             "context": [],
@@ -61,7 +71,6 @@ async def get_history(thread_id: str):
 async def clear_history(thread_id: str):
     try:
         checkpointer = get_checkpointer()
-        # Delete all checkpoints for this thread
         with checkpointer.conn.cursor() as cur:
             cur.execute(
                 "DELETE FROM checkpoints WHERE thread_id = %s",

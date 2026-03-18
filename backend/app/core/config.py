@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     postgres_user: str = "raguser"
     postgres_password: str = "ragpassword"
 
+    # Langfuse
+    langfuse_secret_key: str = ""
+    langfuse_public_key: str = ""
+    langfuse_host: str = "http://localhost:3001"
+
     # App
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
     chunk_size: int = 1000
